@@ -1,0 +1,36 @@
+name: pycodestyle check
+
+on: [push, pull_request]
+
+jobs:
+  pep8-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Установка зависимостей из requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Предварительная установка pycodestyle
+        run: pip install pycodestyle
+
+      - name: Запуск проверки pycodestyle
+        run: |
+          echo "Запуск проверки PEP-8"
+          output=$(pycodestyle script.py 2>&1)
+          if [ -n "$output" ]; then
+            echo "Обнаружены ошибки PEP-8:"
+            echo "$output"
+            exit 1
+          else
+            echo "УСПЕХ: ошибки PEP-8 не обнаружены!"
+          fi
