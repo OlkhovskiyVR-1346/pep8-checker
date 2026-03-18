@@ -26,11 +26,13 @@ jobs:
       - name: Запуск проверки pycodestyle
         run: |
           echo "Запуск проверки PEP-8"
-          output=$(pycodestyle script.py 2>&1)
+          pycodestyle script.py > pep8_output.txt 2>&1 || true
+          output=$(cat pep8_output.txt)
           if [ -n "$output" ]; then
             echo "Обнаружены ошибки PEP-8:"
-            echo "$output"
+            cat pep8_output.txt
             exit 1
           else
-            echo "УСПЕХ: ошибки PEP-8 не обнаружены!"
+            echo "Ошибки PEP-8 не обнаружены!"
           fi
+      
